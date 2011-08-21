@@ -70,8 +70,14 @@ class SimpleSiteScraper(object):
         """
             Function to [recursively] scrape a URL.
         """
-        req = urllib2.Request(url)
-        res = urllib2.urlopen(req)
+        
+        try:
+            req = urllib2.Request(url)
+            res = urllib2.urlopen(req)
+        except urllib2.HTTPError as err:
+            # For now silently catch HTTP errors such as 404s
+            return
+        
         html = res.read()
         
         self.regex_callback(url, re.findall(self.regex, html))
